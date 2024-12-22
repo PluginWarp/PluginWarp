@@ -68,25 +68,6 @@
             max-height: 500px;
         }
 
-        /* File Content Styles */
-        #file-content {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            display: none;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            max-height: 500px;
-            overflow-y: auto;
-            transition: max-height 0.3s ease;
-        }
-
-        #file-content.show {
-            display: block;
-        }
-
         /* Loading Spinner */
         .spinner {
             display: block;
@@ -116,6 +97,7 @@
     <script>
         const repo = 'PluginWarp/PluginWarp'; // Your GitHub repository name
         const apiUrl = `https://api.github.com/repos/${repo}/contents/`;
+        const excludedFiles = ['LICENSE', 'README.md']; // Files to exclude
 
         // Fetch and display the directory structure
         async function fetchRepoContents(path = '') {
@@ -130,6 +112,9 @@
 
             if (Array.isArray(data)) {
                 data.forEach(item => {
+                    // Skip excluded files
+                    if (excludedFiles.includes(item.name)) return;
+
                     const listItem = document.createElement('li');
                     listItem.classList.add(item.type);
                     listItem.classList.add(item.type === 'dir' ? 'folder' : 'file');
@@ -141,7 +126,7 @@
                         subfolder.classList.add('subfolder');
                         listItem.appendChild(subfolder);
                     } else {
-                        listItem.addEventListener('click', () => displayFileContent(item.path));
+                        listItem.addEventListener('click', () => openRawFile(item));
                     }
 
                     fileTree.appendChild(listItem);
@@ -161,13 +146,10 @@
             }
         }
 
-        // Display file content in the preview area
-        async function displayFileContent(path) {
-            const response = await fetch(apiUrl + path);
-            const data = await response.json();
-            const contentArea = document.getElementById('file-content');
-            contentArea.textContent = data.content ? atob(data.content) : 'No content available';
-            contentArea.classList.add('show');
+        // Open the raw file content on GitHub
+        function openRawFile(file) {
+            const fileUrl = `https://github.com/${repo}/blob/main/${file.path}`;
+            window.open(fileUrl, '_blank');
         }
 
         // Initialize the repo viewer
