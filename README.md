@@ -8,7 +8,7 @@
 
 - **Massive Collection**: Over **240+ plugins** from the TurboWarp community.  
 - **Centralized Resource**: All plugins organized and accessible in one place.  
-- **Regular Updates**: Continuously updated with new additions.  
+- **Regular Updates**: Continuously updated every 1-3 days with new additions.  
 
 ---
 
